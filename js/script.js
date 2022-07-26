@@ -1,43 +1,66 @@
 
-let list = ['rock', 'paper', 'scissors'];
 
-let playerScore = 0,
-    computerScore = 0;
+let buttons = document.querySelectorAll('.selection .choice'),
+    playerScore = 0,
+    computerScore = 0
+    reset = document.querySelector('button.reset')
+    player = document.querySelector('.player-score')
+    computer = document.querySelector('.computer-score')
+    div = document.querySelector('.big .info')
+console.log(buttons)
 
 function getComputerChoice () {
-    return list[Math.floor(Math.random()*3)];
+    let rps = ['rock', 'paper', 'scissors']
+
+    return rps[Math.floor(Math.random()*3)]
 }
 
 
-function playRound (playerSelection, computerSelection) {
-    playerSelection = String(playerSelection);
-    computerSelection = String(computerSelection);
-    let choices = playerSelection.toLowerCase() + computerSelection.toLowerCase();
-    let anwser;
-    if (playerSelection === computerSelection) {
-        anwser = "Tie! You both chose " + computerSelection;
+function playGame (playerChoice) {
+    let computerChoice = getComputerChoice(),
+        combination = playerChoice + computerChoice,
+        winningCombinations = ['paperrock', 'rockscissors', 'scissorspaper']
+        
+        
+        info = 'The computer chose ' + computerChoice + '! '
+
+    if (winningCombinations.indexOf(combination) !== -1) {
+        info += 'You win!'
+        playerScore++
+        updateScore()
     }
-    else if (choices === 'paperrock' || 
-        choices === 'rockscissors' || 
-        choices === 'scissorspaper') 
-    {
-        anwser = "You win! " + playerSelection + " beats " + computerSelection;
-        playerScore += 1;
+    else if (playerChoice === computerChoice) {
+        info += 'Tie!'
     }
     else {
-        anwser = "You lose! " + computerSelection + " beats " + playerSelection;
-        computerScore += 1;
+        info += 'You lose!'
+        computerScore++
+        updateScore()
     }
-
-    return anwser;
+    div.textContent = info;
+    return;
 }
 
-for (let i = 0; i < 5; i ++) {
-
-    console.log(playRound(String(prompt("Enter Your Choice: Rock, Paper or Scissors")), getComputerChoice()));
-    console.log("Player score: " + playerScore);
-    console.log("Computer score: " + computerScore);
-    
-    
+function updateScore () {
+    computer.firstChild.textContent = String(computerScore)
+    player.firstChild.textContent = String(playerScore)
 }
 
+
+buttons.forEach(
+    button => button.addEventListener (
+        'click', (e) => {
+            playGame(button.firstChild.textContent.toLowerCase())
+            
+        }
+    )
+)
+
+reset.addEventListener (
+    'click', () => {
+        playerScore = 0
+        computerScore = 0
+        updateScore()
+        div.firstChild.textContent = ' '
+    }
+)
